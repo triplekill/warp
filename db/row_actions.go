@@ -22,3 +22,7 @@ func InsertRow(tableName string, item interface{})  (bool, error) {
 	}
 	return false, fmt.Errorf("Unable to insert row `%s`.", item)
 }
+
+func IndexedValueExist() {
+
+}
