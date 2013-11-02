@@ -7,13 +7,13 @@ import (
 )
 
 // CreateTable creates a new table.
-func CreateTable(tableName, dbName string) (bool, error) {
+func CreateTable(tableName string) (bool, error) {
 
 	if Session() == nil {
 		return invalidSession()
 	}
 
-	results, err := r.Db(dbName).TableCreate(tableName).RunWrite(Session())
+	results, err := r.Db(Db()).TableCreate(tableName).RunWrite(Session())
 	if err != nil {
 		return false, err
 	}
@@ -43,13 +43,13 @@ func CreateTable(tableName, dbName string) (bool, error) {
 }
 
 // DoesTableExist checks if a table already exist.
-func DoesTableExist(tableName, dbName string) (bool, error) {
+func DoesTableExist(tableName string) (bool, error) {
 
 	if Session() == nil {
 		return invalidSession()
 	}
 
-	result, err := r.Db(dbName).TableList().Run(Session())
+	result, err := r.Db(Db()).TableList().Run(Session())
 	if err !=  nil {
 		return false, err
 	}
@@ -84,4 +84,29 @@ func CreateIndex(indexName, tableName string) (bool, error) {
 	return false, fmt.Errorf("Unable to create index `%s` for table `%s`.",
 				indexName, tableName,
 			)
+}
+
+func DoesIndexExist(indexName, tableName string) (bool, error) {
+
+	if Session() == nil {
+		return invalidSession()
+	}
+
+	result, err := r.Db(Db()).Table(tableName).IndexList().Run(Session())
+	if err !=  nil {
+		return false, err
+	}
+
+	if result.Next() {
+		var indices []string
+		result.Scan(&indices)
+
+		for _, i := range indices {
+			if i == indexName {
+				return true, nil
+			}
+		}
+	}
+
+	return false, nil
 }

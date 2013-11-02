@@ -6,16 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"warp/warplib/remote"
-	"warp/db"
+
+//	"warp/warplib/remote"
+//	"warp/db"
 )
 
-// TODO: Delete this
-type Slave struct {
-	Id string `gorethink:"id,omitempty"`
-	Name string
-	Age int
-}
 
 var commands = []*Command {
 
@@ -74,10 +69,10 @@ func main() {
 		}
 	}
 
-	_, err := db.Initialize("localhost", "28015")
-	if err != nil {
-		fmt.Println("Could not init db")
-	}
+	//_, err := db.Initialize("localhost", "28015")
+	//if err != nil {
+	//	fmt.Println("Could not init db")
+	//}
 
 	//slave := &Slave{
 	//	Name: "miguel",
@@ -92,8 +87,8 @@ func main() {
 	//fmt.Println(db.DoesTableExist("testers22s111", "test", nil))
 
 
-	fmt.Println(remote.UsablePort("toppatch", "test.toppatch.com"))
-	fmt.Println(remote.IsPortAvailable(15000, "toppatch", "test.toppatch.com"))
+	//fmt.Println(remote.UsablePort("toppatch", "test.toppatch.com"))
+	//fmt.Println(remote.IsPortAvailable(15000, "toppatch", "test.toppatch.com"))
 
 	//ports := parseNetstatPorts(output)
 	//for x := 0; x < len(ports); x++ {

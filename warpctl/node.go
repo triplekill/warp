@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	"warp/core/node"
 )
 
 
@@ -28,6 +30,15 @@ var nodeName string		// -name
 func runNode(cmd *Command, args []string) {
 
 	if addNode {
+
+		n := node.New(
+			nodeName,
+			"hostname",
+			"ip address",
+			"22",
+			"5000",
+		)
+		node.Save(n)
 		fmt.Printf("Add new node %s.\n", nodeName)
 	}
 
