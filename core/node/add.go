@@ -38,7 +38,6 @@ func init() {
 }
 
 
-
 // New creates a new Node instance.
 func New(name, hostname, ip, sshPort, destPort string) *Node {
 
