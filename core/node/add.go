@@ -21,12 +21,12 @@ var allNodeIndices = []string {
 
 type Node struct {
 
-	Id string			`gorethink:"id,omitempty"`
-	Name string			`gorethink:"name"`
-	Hostname string			`gorethink:"hostname"`
-	IPAddress string		`gorethink:"ip_address"`
-	SshPort string			`gorethink:"ssh_port"`
-	DestinationPort string		`gorethink:"destination_port"`
+	Id string                       `gorethink:"id,omitempty"`
+	Name string                     `gorethink:"name"`
+	Hostname string                 `gorethink:"hostname"`
+	IPAddress string                `gorethink:"ip_address"`
+	SshPort string                  `gorethink:"ssh_port"`
+	DestinationPort string          `gorethink:"destination_port"`
 }
 
 func init() {
