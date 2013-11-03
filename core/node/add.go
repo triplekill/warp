@@ -2,6 +2,8 @@ package node
 
 import (
 
+	"fmt"
+
 	"warp/db"
 	"warp/utils"
 )
@@ -52,12 +54,38 @@ func New(name, hostname, ip, sshPort, destPort string) *Node {
 
 func Save(node *Node) error {
 
-	_, err := db.InsertRow(nodeTable, *node)
+	exist, err := DoesNodeExist(node.Name)
+	if err != nil {
+		return err
+	}
+	if exist {
+		return fmt.Errorf("Node with name %q already exist.", node.Name)
+	}
+
+	_, err = db.InsertRow(nodeTable, *node)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func DoesNodeExist(name string) (bool, error) {
+
+	items, err := db.GetByIndex(
+		nodeTable,
+		nodeNameIndex,
+		name,
+	)
+	if err != nil {
+		return false, err
+	}
+
+	if len(items) > 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func createTables() {

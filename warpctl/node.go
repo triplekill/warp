@@ -38,8 +38,12 @@ func runNode(cmd *Command, args []string) {
 			"22",
 			"5000",
 		)
-		node.Save(n)
-		fmt.Printf("Add new node %s.\n", nodeName)
+		err := node.Save(n)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Printf("Add new node %s.\n", nodeName)
+		}
 	}
 
 }
