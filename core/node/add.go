@@ -28,7 +28,6 @@ type Node struct {
 	Hostname string                 `gorethink:"hostname"`
 	IPAddress string                `gorethink:"ip_address"`
 	SshPort string                  `gorethink:"ssh_port"`
-	DestinationPort string          `gorethink:"destination_port"`
 }
 
 func init() {
@@ -41,14 +40,13 @@ func init() {
 
 
 // New creates a new Node instance.
-func New(name, hostname, ip, sshPort, destPort string) *Node {
+func New(name, hostname, ip, sshPort string) *Node {
 
 	return &Node {
 		Name: name,
 		Hostname: hostname,
 		IPAddress: ip,
 		SshPort: sshPort,
-		DestinationPort: destPort,
 	}
 }
 
