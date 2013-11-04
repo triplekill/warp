@@ -54,6 +54,16 @@ func GetByIndex(tableName string, index interface{}, args ...interface{}) ([]int
 	return items, nil
 }
 
-func IndexedValueExist(table string, args map[string]interface{}) {
+func DeleteByIndex(tableName string, index interface{}, args ...interface{}) error {
 
+	response, err := r.Table(tableName).GetAllByIndex(index, args...).Delete().RunWrite(Session())
+	if err != nil {
+		return fmt.Errorf("Error tring to delete: %s\n", err)
+	}
+
+	if response.Deleted <= 0 {
+		return fmt.Errorf("Nothing was deleted.")
+	}
+
+	return nil
 }

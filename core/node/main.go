@@ -68,6 +68,16 @@ func Save(node *Node) error {
 	return nil
 }
 
+func Delete(name string) error {
+
+	err := db.DeleteByIndex(nodeTable, nodeNameIndex, name)
+	if err != nil {
+		return fmt.Errorf("Unable to delete node %q. %s", name, err)
+	}
+
+	return nil
+}
+
 func DoesNodeExist(name string) (bool, error) {
 
 	items, err := db.GetByIndex(
@@ -141,4 +151,3 @@ func createIndices() {
 
 	}
 }
-
