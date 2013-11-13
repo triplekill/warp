@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"warp/db"
-	"warp/utils"
 )
 
 const (
@@ -34,8 +33,8 @@ func init() {
 
 	db.Readify()
 
-	createTables()
-	createIndices()
+	db.CreateTables(allNodeTables)
+	db.CreateIndices(nodeTable, allNodeIndices)
 }
 
 
@@ -60,12 +59,17 @@ func Save(node *Node) error {
 		return fmt.Errorf("Node with name %q already exist.", node.Name)
 	}
 
-	_, err = db.InsertRow(nodeTable, *node)
+	keys, err := db.InsertRow(nodeTable, *node)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	if len(keys) >= 1 {
+		node.Id = keys[0]
+		return nil
+	}
+
+	return fmt.Errorf("No ID was generated.")
 }
 
 func Delete(name string) error {
@@ -94,60 +98,4 @@ func DoesNodeExist(name string) (bool, error) {
 	}
 
 	return false, nil
-}
-
-func createTables() {
-
-	for _, table := range allNodeTables {
-
-		exist, err := db.DoesTableExist(table);
-		if err != nil {
-			utils.Panicf(
-				"Could not verify table %q. Error: %s",
-				table,
-				err,
-			)
-		}
-
-		if !exist {
-			_, err := db.CreateTable(table)
-			if err != nil {
-				utils.Panicf(
-					"Unable to create %q table. Error: %s",
-					table,
-					err,
-				)
-			}
-		}
-	}
-}
-
-func createIndices() {
-
-	for _, index := range allNodeIndices {
-
-		indexExist, err := db.DoesIndexExist(index, nodeTable)
-		if err != nil {
-			utils.Panicf(
-				"Could not verify index %q for table %q. Error: %s",
-				index,
-				nodeTable,
-				err,
-			)
-		}
-
-		if !indexExist {
-			_, err := db.CreateIndex(index, nodeTable)
-			if err != nil {
-				utils.Panicf(
-					"Unable to create index %q for table %q. Error: %s",
-					index,
-					nodeTable,
-					err,
-				)
-			}
-		}
-
-
-	}
 }

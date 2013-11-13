@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	r "github.com/dancannon/gorethink"
+
+	"warp/utils"
 )
 
 var primary_session *r.Session
@@ -46,9 +48,9 @@ func SetSession(session *r.Session) error {
 	return nil
 }
 
-func invalidSession() (bool, error) {
+func invalidSession() error {
 
-	return false, fmt.Errorf("Not session is set. Db must be initialize before use.")
+	return fmt.Errorf("No session is set. Db must be initialize before use.")
 }
 
 // Initialize creates a session/connection to the database and any necessary
@@ -74,5 +76,65 @@ func Readify() {
 		if err != nil {
 			panic(err)
 		}
+	}
+}
+
+// CreateTables is a helper to create multiple tables in one shot.
+// Will return a panic if unable to create a table.
+func CreateTables(tables []string) {
+
+	for _, table := range tables {
+
+		exist, err := DoesTableExist(table);
+		if err != nil {
+			utils.Panicf(
+				"Could not verify table %q. Error: %s",
+				table,
+				err,
+			)
+		}
+
+		if !exist {
+			_, err := CreateTable(table)
+			if err != nil {
+				utils.Panicf(
+					"Unable to create %q table. Error: %s",
+					table,
+					err,
+				)
+			}
+		}
+	}
+}
+
+// CreateIndices is a helper to create multiple indices in one shot.
+// Will return a panic if unable to create an index.
+func CreateIndices(tableName string, indices []string) {
+
+	for _, index := range indices {
+
+		indexExist, err := DoesIndexExist(index, tableName)
+		if err != nil {
+			utils.Panicf(
+				"Could not verify index %q for table %q. Error: %s",
+				index,
+				tableName,
+				err,
+			)
+		}
+
+		if !indexExist {
+			_, err := CreateIndex(index, tableName)
+			if err != nil {
+				utils.Panicf(
+					"Unable to create index %q for table %q. Error: %s",
+					index,
+					tableName,
+					err,
+				)
+			}
+		}
+
+
 	}
 }

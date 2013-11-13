@@ -6,21 +6,22 @@ import (
 	r "github.com/dancannon/gorethink"
 )
 
-func InsertRow(tableName string, item interface{})  (bool, error) {
+func InsertRow(tableName string, item interface{})  ([]string, error) {
 
 	if Session() == nil {
-		return invalidSession()
+		err := invalidSession()
+		return nil, err
 	}
 
 	results, err := r.Table(tableName).Insert(item).RunWrite(Session())
 	if err != nil {
-		return false, fmt.Errorf("Unable to insert row: %s", err)
+		return nil, fmt.Errorf("Unable to insert row: %s", err)
 	}
 
 	if results.Inserted == insertedSuccessful {
-		return true, nil
+		return results.GeneratedKeys, nil
 	}
-	return false, fmt.Errorf("Unable to insert row `%s`.", item)
+	return nil, fmt.Errorf("Unable to insert row `%s`.", item)
 }
 
 func GetByIndex(tableName string, index interface{}, args ...interface{}) ([]interface{}, error) {

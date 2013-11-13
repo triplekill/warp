@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"warp/core/node"
+	"warp/core/remote"
 )
 
 
@@ -130,8 +131,24 @@ func newNode() {
 	err := node.Save(n)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-
-		fmt.Printf("Node %q was added successfully.\n", nodeName)
+		os.Exit(1)
 	}
+
+	d, err := remote.NewDestination(n.Id)
+	if err != nil {
+
+		fmt.Printf("Destination port was not added for node %q.\n", nodeName)
+		node.Delete(nodeName)
+		os.Exit(1)
+	}
+
+	err = remote.SaveDestination(d)
+	if err != nil {
+		fmt.Printf("Unable to save a destination port for node %q\n", nodeName)
+		node.Delete(nodeName)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Node %q was saved and will be using destination port %q.\n", nodeName, d.LocalPort)
+	fmt.Println("** Please add a firewall rules if necessary. **")
 }

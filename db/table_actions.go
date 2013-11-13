@@ -10,7 +10,7 @@ import (
 func CreateTable(tableName string) (bool, error) {
 
 	if Session() == nil {
-		return invalidSession()
+		return false, invalidSession()
 	}
 
 	results, err := r.Db(Db()).TableCreate(tableName).RunWrite(Session())
@@ -46,7 +46,7 @@ func CreateTable(tableName string) (bool, error) {
 func DoesTableExist(tableName string) (bool, error) {
 
 	if Session() == nil {
-		return invalidSession()
+		return false, invalidSession()
 	}
 
 	result, err := r.Db(Db()).TableList().Run(Session())
@@ -89,7 +89,7 @@ func CreateIndex(indexName, tableName string) (bool, error) {
 func DoesIndexExist(indexName, tableName string) (bool, error) {
 
 	if Session() == nil {
-		return invalidSession()
+		return false, invalidSession()
 	}
 
 	result, err := r.Db(Db()).Table(tableName).IndexList().Run(Session())
